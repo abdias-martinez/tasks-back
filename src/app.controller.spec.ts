@@ -21,7 +21,7 @@ describe('AppController', () => {
 
     const number = 2
 
-    it('adds 1 + 2 to equals 4"', () => {
+    it('adds 2 to equals 2"', () => {
       expect(number).toBe(number)
     })
   })
