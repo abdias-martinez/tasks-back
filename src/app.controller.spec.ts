@@ -18,11 +18,5 @@ describe('AppController', () => {
     it('should return "Hello World!"', () => {
       expect(appController.getHello()).toBe('Hello World!')
     })
-
-    const number = 2
-
-    it('adds 2 to equals 2"', () => {
-      expect(number).toBe(number)
-    })
   })
 })
