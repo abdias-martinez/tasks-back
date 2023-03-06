@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from './../src/app.module'
-import { status } from '../src/constants/status'
+import { httpStatus } from '../src/constants/http-status'
 
 describe('AppController (e2e)', () => {
   let app: INestApplication
@@ -19,6 +19,6 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () =>
     request(app.getHttpServer())
       .get('/')
-      .expect(status.STATUS_OK)
+      .expect(httpStatus.STATUS_OK)
       .expect('Hello World!'))
 })
