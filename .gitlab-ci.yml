@@ -2,7 +2,7 @@ image: node:16-alpine
 
 before_script:
   - node -v
-  - yarn install
+  - npm install
 
 cache:
   paths:
@@ -17,17 +17,17 @@ stages:
 unit-test:
   stage: test
   script:
-    - yarn test
+    - npm run test
 
 lint-tinkin:
   stage: lint
   script:
-    - yarn lint
+    - npm run lint
 
 build-code:
   stage: build
   script: 
-    - yarn build
+    - npm run build
   artifacts:
     paths:
       - 'packages/*/lib'
