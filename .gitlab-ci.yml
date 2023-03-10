@@ -1,4 +1,4 @@
-image: node:16-alpine
+image: node:lts
 
 before_script:
   - node -v
