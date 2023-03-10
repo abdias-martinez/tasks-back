@@ -10,9 +10,9 @@ cache:
     - "packages/*/node_modules"
 
 stages: 
-  - test
-  - lint
   - build
+  - lint
+  - test
 
 build-code:
   stage: build
