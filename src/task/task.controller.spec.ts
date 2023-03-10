@@ -34,8 +34,8 @@ describe('TaskController', () => {
   })
 
   afterAll(async () => {
-    await app.close()
     await MongoHelper.stopFakeDbConnection(mongod)
+    await app.close()
   })
 
   it('should be defined', () => {
