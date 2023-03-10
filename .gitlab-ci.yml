@@ -1,8 +1,9 @@
-image: node:16
+image: node:16.15.0
 
 before_script:
   - node -v
   - npm install
+  - npm install --legacy-peer-deps
 
 cache:
   paths:
