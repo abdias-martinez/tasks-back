@@ -2,7 +2,6 @@ image: node:16.15.0
 
 before_script:
   - node -v
-  - npm install
   - npm install --legacy-peer-deps
 
 cache:
@@ -11,24 +10,25 @@ cache:
     - "packages/*/node_modules"
 
 stages: 
-  - test
-  - lint
   - build
+  - lint
+  - test
 
-unit-test:
-  stage: test
-  script:
-    - npm run test
+build-code:
+  stage: build
+  script: 
+    - echo "Instalando dependencias"
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
 
 lint-tinkin:
   stage: lint
   script:
     - npm run lint
 
-build-code:
-  stage: build
-  script: 
-    - npm run build
-  artifacts:
-    paths:
-      - 'packages/*/lib'
+unit-test:
+  stage: test
+  script:
+    - npm run test
