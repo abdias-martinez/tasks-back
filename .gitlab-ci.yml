@@ -1,4 +1,4 @@
-image: node:16.15.0
+image: node:lts
 
 before_script:
   - node -v
