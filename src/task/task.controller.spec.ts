@@ -6,7 +6,6 @@ import { TaskService } from './task.service'
 import { MongoHelper } from '../../test/mongo-helper'
 import { IFakeDbConnection } from './interfaces/fake-db-connection'
 import { INestApplication, HttpStatus } from '@nestjs/common'
-import { AppModule } from '../app.module'
 import * as request from 'supertest'
 
 describe('TaskController', () => {
@@ -20,7 +19,6 @@ describe('TaskController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        AppModule,
         MongooseModule.forRoot(mongoUri),
         MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
       ],
