@@ -3,9 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Task } from './entities/task.entity'
 import { CreateTaskDto } from './dto/create-task.dto'
-
-import { taskStatus } from '../constants/status'
-
+import { TASK_STATUS } from '../constants/status'
 @Injectable()
 export class TaskService {
   constructor(
@@ -14,7 +12,7 @@ export class TaskService {
   ) {}
 
   findStatus() {
-    return taskStatus
+    return TASK_STATUS
   }
 
   async create(task: CreateTaskDto) {
@@ -43,7 +41,7 @@ export class TaskService {
     return errors
   }
 
-  private async isTaskAlreadyInDB(code: string): Promise<boolean> {
+  private async isTaskAlreadyInDB(code: string): Promise<{ _id: string }> {
     return await this.taskModel.exists({ code })
   }
 }
