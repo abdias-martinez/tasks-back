@@ -6,13 +6,13 @@ import { TypeStatusEnum } from '../interfaces/task-status'
 export class Task extends Document {
   @Prop({
     index: true,
-    required: [true, 'El nombre de la tarea es requerido'],
+    required: true,
   })
   taskName: string
 
   @Prop({
     index: true,
-    required: [true, 'La descripción de la tarea es requerido'],
+    required: true,
   })
   taskDescription: string
 
