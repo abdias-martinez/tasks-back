@@ -1,4 +1,4 @@
-export const status = [
+export const taskStatus = [
   {
     statusId: 1,
     statusName: 'Creada',
