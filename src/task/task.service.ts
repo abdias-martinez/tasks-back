@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Task } from './entities/task.entity'
+import { CreateTaskDto } from './dto/create-task.dto'
 
 import { taskStatus } from '../constants/status'
 
@@ -12,11 +13,37 @@ export class TaskService {
     private readonly taskModel: Model<Task>,
   ) {}
 
+  findStatus() {
+    return taskStatus
+  }
+
+  async create(task: CreateTaskDto) {
+    const { code } = task
+    const errors = this.validateTask(task)
+    if (errors.length) return errors
+
+    if (await this.isTaskAlreadyInDB(code)) {
+      return [`La tarea con el código ${code} ya existe en la base de datos`]
+    }
+
+    return await this.taskModel.create(task)
+  }
+
   findAll() {
     return this.taskModel.find()
   }
 
-  findStatus() {
-    return taskStatus
+  validateTask(task: CreateTaskDto): string[] {
+    const errors = []
+    for (const property in task) {
+      const value = task[property]
+      if (!value) errors.push(`El campo ${property} es requerido`)
+    }
+
+    return errors
+  }
+
+  private async isTaskAlreadyInDB(code: string): Promise<boolean> {
+    return await this.taskModel.exists({ code })
   }
 }

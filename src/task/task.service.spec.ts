@@ -53,4 +53,51 @@ describe('TaskService', () => {
       expect(response).toEqual(taskStatus)
     })
   })
+
+  describe('When the create method is called', () => {
+    const taskToCreate = {
+      taskName: 'Task 1',
+      taskDescription: 'Task 1 description',
+      code: 'T1',
+    }
+
+    it('should create a new task, save it to the DB and return it', async () => {
+      const response = await taskService.create(taskToCreate)
+
+      expect(response).toHaveProperty('_id')
+    })
+
+    it('debe dar error cuando hay duplicidad de codigo', async () => {
+      const response = await taskService.create(taskToCreate)
+      expect(response).toEqual([
+        'La tarea con el código T1 ya existe en la base de datos',
+      ])
+    })
+
+    it('should return error if code is empty', async () => {
+      const taskToCreateWithNoCode = {
+        taskName: 'Task 1',
+        taskDescription: 'Task 1 description',
+        code: '',
+      }
+      const response = await taskService.create(taskToCreateWithNoCode)
+      expect(response).toEqual(['El campo code es requerido'])
+    })
+
+    it('should return a list of errors if the taskName, taskDescription and code are empty', async () => {
+      const taskToCreateWithNoCode = {
+        taskName: '',
+        taskDescription: '',
+        code: '',
+      }
+
+      const response = await taskService.create(taskToCreateWithNoCode)
+
+      expect(response).toEqual([
+        'El campo taskName es requerido',
+        'El campo taskDescription es requerido',
+        'El campo code es requerido',
+      ])
+    })
+  })
 })
