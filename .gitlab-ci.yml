@@ -26,6 +26,7 @@ build-code:
 lint-tinkin:
   stage: lint
   script:
+    - echo "Limpiando codigo"
     - npm run lint
 
 unit-test:
