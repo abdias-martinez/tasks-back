@@ -1,17 +1,12 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator'
-
+import { IsNotEmpty } from 'class-validator'
+import { ERROR_MESSAGES } from '../../constants/errores'
 export class CreateTaskDto {
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
+  @IsNotEmpty({ message: ERROR_MESSAGES.IsNotEmpty })
   readonly taskName: string
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
+  @IsNotEmpty({ message: ERROR_MESSAGES.IsNotEmpty })
   readonly taskDescription: string
 
-  @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: ERROR_MESSAGES.IsNotEmpty })
   readonly code: string
 }

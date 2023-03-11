@@ -67,7 +67,7 @@ describe('TaskService', () => {
       expect(response).toHaveProperty('_id')
     })
 
-    it('debe dar error cuando hay duplicidad de codigo', async () => {
+    it('should give an error when there is code duplication', async () => {
       const response = await taskService.create(taskToCreate)
       expect(response).toEqual([
         'La tarea con el código T1 ya existe en la base de datos',
