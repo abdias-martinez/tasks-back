@@ -10,9 +10,9 @@ cache:
     - "packages/*/node_modules"
 
 stages: 
-  - build
-  - lint
   - test
+  - lint
+  - build
 
 build-code:
   stage: build
@@ -26,10 +26,10 @@ build-code:
 lint-tinkin:
   stage: lint
   script:
-    - echo "Limpiando codigo"
     - npm run lint
 
 unit-test:
   stage: test
   script:
     - npm run test
+
