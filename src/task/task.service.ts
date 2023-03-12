@@ -27,6 +27,10 @@ export class TaskService {
     return await this.taskModel.create(task)
   }
 
+  async getAll() {
+    return await this.taskModel.find()
+  }
+
   validateTask(task: CreateTaskDto): string[] {
     const errors = []
     for (const property in task) {
