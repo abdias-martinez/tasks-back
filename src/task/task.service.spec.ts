@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { MongoHelper } from '../../test/mongo-helper'
 import { Task, TaskSchema } from './entities/task.entity'
 import { IFakeDbConnection } from './interfaces/fake-db-connection'
+import { TypeStatusEnum } from './interfaces/task-status'
 import { TaskService } from './task.service'
 
 describe('TaskService', () => {
@@ -64,7 +65,14 @@ describe('TaskService', () => {
     it('should create a new task, save it to the DB and return it', async () => {
       const response = await taskService.create(taskToCreate)
 
-      expect(response).toHaveProperty('_id')
+      expect(response).toEqual(
+        expect.objectContaining({
+          ...taskToCreate,
+          statusId: TypeStatusEnum.CREATE,
+          updatedAt: expect.any(Date),
+          createdAt: expect.any(Date),
+        }),
+      )
     })
 
     it('should give an error when there is code duplication', async () => {

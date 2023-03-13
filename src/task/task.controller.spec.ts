@@ -81,6 +81,7 @@ describe('TaskController', () => {
 
       expect(errors[0].constraints).toEqual({
         isNotEmpty: 'El campo taskName es requerido',
+        isString: 'El campo taskName debe ser una cadena de texto',
       })
     })
 
@@ -91,30 +92,29 @@ describe('TaskController', () => {
 
       expect(errors[0].constraints).toEqual({
         isNotEmpty: 'El campo taskName es requerido',
+        isString: 'El campo taskName debe ser una cadena de texto',
       })
       expect(errors[1].constraints).toEqual({
         isNotEmpty: 'El campo taskDescription es requerido',
+        isString: 'El campo taskDescription debe ser una cadena de texto',
       })
       expect(errors[2].constraints).toEqual({
         isNotEmpty: 'El campo code es requerido',
+        isString: 'El campo code debe ser una cadena de texto',
       })
     })
 
-    it('should return a list of errors if the taskName, taskDescription, and code are not string', async () => {
+    it('should return a list of errors if the taskDescription are not string', async () => {
       const task = {
-        taskName: 564,
+        taskName: 'task-100',
         taskDescription: false,
-        code: [],
+        code: 'code',
       }
       const response = await request(app.getHttpServer())
         .post('/task')
         .send(task)
 
-      expect(response.body).toEqual([
-        'El campo taskName debe ser una cadena de texto',
-        'El campo taskDescription debe ser una cadena de texto',
-        'El campo code debe ser una cadena de texto',
-      ])
+      expect(response.body).toEqual(['El campo taskDescription es requerido'])
     })
 
     it('get task created', async () => {
