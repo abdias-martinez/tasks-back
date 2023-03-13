@@ -17,8 +17,8 @@ export class MongoHelper {
       useUnifiedTopology: true,
     })
     await fixtures.load()
-    await fixtures.unload()
-    await fixtures.disconnect()
+    // await fixtures.unload()
+    // await fixtures.disconnect()
 
     const mongoConnection: Connection = (await connect(mongoUri)).connection
 

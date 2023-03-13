@@ -12,6 +12,7 @@ describe('TaskService', () => {
   beforeAll(async () => {
     fakeDbConnection = await MongoHelper.startFakeDbConnection()
     const { mongoUri } = fakeDbConnection
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         MongooseModule.forRoot(mongoUri, { useNewUrlParser: true }),
@@ -102,7 +103,7 @@ describe('TaskService', () => {
   })
 
   // describe('When the get method is called', () => {
-  //   it.only('should a return a list of tasks', async () => {
+  //   it('should a return a list of tasks', async () => {
   //     const response = await taskService.getAll()
 
   //     expect(response).toEqual([
