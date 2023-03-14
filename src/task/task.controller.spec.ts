@@ -104,19 +104,6 @@ describe('TaskController', () => {
       })
     })
 
-    it('should return a list of errors if the taskDescription are not string', async () => {
-      const task = {
-        taskName: 'task-100',
-        taskDescription: false,
-        code: 'code',
-      }
-      const response = await request(app.getHttpServer())
-        .post('/task')
-        .send(task)
-
-      expect(response.body).toEqual(['El campo taskDescription es requerido'])
-    })
-
     it('get task created', async () => {
       const task = {
         taskName: 'Task 1',

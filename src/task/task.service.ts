@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '../constants/errors'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
@@ -17,24 +18,16 @@ export class TaskService {
 
   async create(task: CreateTaskDto) {
     const { code } = task
-    const errors = this.validateTask(task)
-    if (errors.length) return errors
-
     if (await this.isTaskAlreadyInDB(code)) {
-      return [`La tarea con el código ${code} ya existe en la base de datos`]
+      let message = ERROR_MESSAGES.isDuplicated.replace('$table', 'tarea')
+      message = message.replace('$property', 'code')
+      message = message.replace('$value', code)
+
+      return { ok: false, response: [message] }
     }
 
-    return await this.taskModel.create(task)
-  }
-
-  validateTask(task: CreateTaskDto): string[] {
-    const errors = []
-    for (const property in task) {
-      const value = task[property]
-      if (!value) errors.push(`El campo ${property} es requerido`)
-    }
-
-    return errors
+    const response = await this.taskModel.create(task)
+    return { ok: true, response }
   }
 
   private async isTaskAlreadyInDB(code: string): Promise<{ _id: string }> {

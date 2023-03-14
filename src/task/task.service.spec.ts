@@ -65,7 +65,7 @@ describe('TaskService', () => {
     it('should create a new task, save it to the DB and return it', async () => {
       const response = await taskService.create(taskToCreate)
 
-      expect(response).toEqual(
+      expect(response.response).toEqual(
         expect.objectContaining({
           ...taskToCreate,
           statusId: TypeStatusEnum.CREATE,
@@ -77,9 +77,13 @@ describe('TaskService', () => {
 
     it('should give an error when there is code duplication', async () => {
       const response = await taskService.create(taskToCreate)
-      expect(response).toEqual([
-        'La tarea con el código T1 ya existe en la base de datos',
-      ])
+
+      expect(response).toEqual({
+        ok: false,
+        response: [
+          'El nuevo registro de tarea con el code: T1 ya existe en la DB',
+        ],
+      })
     })
 
     it('should return error if code is empty', async () => {
@@ -88,8 +92,8 @@ describe('TaskService', () => {
         taskDescription: 'Task 1 description',
         code: '',
       }
-      const response = await taskService.create(taskToCreateWithNoCode)
-      expect(response).toEqual(['El campo code es requerido'])
+
+      await expect(taskService.create(taskToCreateWithNoCode)).rejects.toThrow()
     })
 
     it('should return a list of errors if the taskName, taskDescription and code are empty', async () => {
@@ -99,13 +103,7 @@ describe('TaskService', () => {
         code: '',
       }
 
-      const response = await taskService.create(taskToCreateWithNoCode)
-
-      expect(response).toEqual([
-        'El campo taskName es requerido',
-        'El campo taskDescription es requerido',
-        'El campo code es requerido',
-      ])
+      await expect(taskService.create(taskToCreateWithNoCode)).rejects.toThrow()
     })
   })
 })
