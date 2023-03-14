@@ -46,16 +46,16 @@ describe('TaskController', () => {
     it('get the list of status', async () => {
       const taskStatus = [
         {
-          statusId: 1,
-          statusName: 'Creada',
+          id: 1,
+          name: 'Creada',
         },
         {
-          statusId: 2,
-          statusName: 'En proceso',
+          id: 2,
+          name: 'En proceso',
         },
         {
-          statusId: 3,
-          statusName: 'Terminada',
+          id: 3,
+          name: 'Terminada',
         },
       ]
       const response = await request(app.getHttpServer())
@@ -75,11 +75,11 @@ describe('TaskController', () => {
 
       const createTaskDto = new CreateTaskDto()
       Object.assign(createTaskDto, task)
-
       const errors = await validate(createTaskDto)
 
       expect(errors[0].constraints).toEqual({
         isNotEmpty: 'El campo taskName es requerido',
+        isString: 'El campo taskName debe ser una cadena de texto',
       })
     })
 
@@ -90,30 +90,16 @@ describe('TaskController', () => {
 
       expect(errors[0].constraints).toEqual({
         isNotEmpty: 'El campo taskName es requerido',
+        isString: 'El campo taskName debe ser una cadena de texto',
       })
       expect(errors[1].constraints).toEqual({
         isNotEmpty: 'El campo taskDescription es requerido',
+        isString: 'El campo taskDescription debe ser una cadena de texto',
       })
       expect(errors[2].constraints).toEqual({
         isNotEmpty: 'El campo code es requerido',
+        isString: 'El campo code debe ser una cadena de texto',
       })
-    })
-
-    it('should return a list of errors if the taskName, taskDescription, and code are not string', async () => {
-      const task = {
-        taskName: 564,
-        taskDescription: false,
-        code: [],
-      }
-      const response = await request(app.getHttpServer())
-        .post('/task')
-        .send(task)
-
-      expect(response.body).toEqual([
-        'El campo taskName debe ser una cadena de texto',
-        'El campo taskDescription debe ser una cadena de texto',
-        'El campo code debe ser una cadena de texto',
-      ])
     })
 
     it('get task created', async () => {

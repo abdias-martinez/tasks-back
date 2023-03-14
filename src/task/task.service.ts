@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common'
+import { ERROR_MESSAGES } from '../constants/errors'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Task } from './entities/task.entity'
@@ -17,31 +18,50 @@ export class TaskService {
 
   async create(task: CreateTaskDto) {
     const { code } = task
-    const errors = this.validateTask(task)
-    if (errors.length) return errors
-
-    if (await this.isTaskAlreadyInDB(code)) {
-      return [`La tarea con el código ${code} ya existe en la base de datos`]
-    }
+    await this.isTaskAlreadyInDB(code)
 
     return await this.taskModel.create(task)
   }
 
   async getAll() {
-    return await this.taskModel.find()
+    const [count, tasks] = await Promise.all([
+      this.taskModel.countDocuments(),
+      this.taskModel.find().select('-__v').select('-createdAt').lean(),
+    ])
+
+    const newTasks = tasks.map(({ _id, updatedAt, statusId, ...rest }) => ({
+      id: _id,
+      ...rest,
+      status: TASK_STATUS.find((status) => status.name === statusId),
+      updatedAt: this.formatDateTime(new Date(updatedAt)),
+    }))
+
+    return { count, task: newTasks }
   }
 
-  validateTask(task: CreateTaskDto): string[] {
-    const errors = []
-    for (const property in task) {
-      const value = task[property]
-      if (!value) errors.push(`El campo ${property} es requerido`)
+  private async isTaskAlreadyInDB(code: string): Promise<void> {
+    const response = await this.taskModel.exists({ code })
+    if (response) {
+      let message = ERROR_MESSAGES.isDuplicated.replace('$property', 'code')
+      message = message.replace('$value', code)
+
+      throw new BadRequestException([message])
     }
-
-    return errors
   }
 
-  private async isTaskAlreadyInDB(code: string): Promise<{ _id: string }> {
-    return await this.taskModel.exists({ code })
+  private formatDateTime = (date: Date): string => {
+    const locale = 'es-419-u-hc-h12'
+    const newDate = date ? new Date(date) : new Date()
+    const dateTime = new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+
+    const formattedDateTime = dateTime.format(newDate)
+    return formattedDateTime
   }
 }

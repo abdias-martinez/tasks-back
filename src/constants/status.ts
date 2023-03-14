@@ -1,14 +1,14 @@
 export const TASK_STATUS = [
   {
-    statusId: 1,
-    statusName: 'Creada',
+    id: 1,
+    name: 'Creada',
   },
   {
-    statusId: 2,
-    statusName: 'En proceso',
+    id: 2,
+    name: 'En proceso',
   },
   {
-    statusId: 3,
-    statusName: 'Terminada',
+    id: 3,
+    name: 'Terminada',
   },
 ]

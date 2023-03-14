@@ -29,6 +29,8 @@ export class Task extends Document {
     default: 'Creada',
   })
   statusId: TypeStatusEnum
+
+  updatedAt: Date
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task)
