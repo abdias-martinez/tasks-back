@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from '../constants/errors'
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Task } from './entities/task.entity'
@@ -18,19 +18,18 @@ export class TaskService {
 
   async create(task: CreateTaskDto) {
     const { code } = task
-    if (await this.isTaskAlreadyInDB(code)) {
-      let message = ERROR_MESSAGES.isDuplicated.replace('$table', 'tarea')
-      message = message.replace('$property', 'code')
-      message = message.replace('$value', code)
+    await this.isTaskAlreadyInDB(code)
 
-      return { ok: false, response: [message] }
-    }
-
-    const response = await this.taskModel.create(task)
-    return { ok: true, response }
+    return await this.taskModel.create(task)
   }
 
-  private async isTaskAlreadyInDB(code: string): Promise<{ _id: string }> {
-    return await this.taskModel.exists({ code })
+  private async isTaskAlreadyInDB(code: string): Promise<void> {
+    const response = await this.taskModel.exists({ code })
+    if (response) {
+      let message = ERROR_MESSAGES.isDuplicated.replace('$property', 'code')
+      message = message.replace('$value', code)
+
+      throw new BadRequestException([message])
+    }
   }
 }

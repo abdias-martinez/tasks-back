@@ -5,6 +5,7 @@ import { Task, TaskSchema } from './entities/task.entity'
 import { IFakeDbConnection } from './interfaces/fake-db-connection'
 import { TypeStatusEnum } from './interfaces/task-status'
 import { TaskService } from './task.service'
+import { BadRequestException } from '@nestjs/common'
 
 describe('TaskService', () => {
   let taskService: TaskService
@@ -65,7 +66,7 @@ describe('TaskService', () => {
     it('should create a new task, save it to the DB and return it', async () => {
       const response = await taskService.create(taskToCreate)
 
-      expect(response.response).toEqual(
+      expect(response).toEqual(
         expect.objectContaining({
           ...taskToCreate,
           statusId: TypeStatusEnum.CREATE,
@@ -76,14 +77,15 @@ describe('TaskService', () => {
     })
 
     it('should give an error when there is code duplication', async () => {
-      const response = await taskService.create(taskToCreate)
+      await expect(taskService.create(taskToCreate)).rejects.toThrow(
+        BadRequestException,
+      )
+    })
 
-      expect(response).toEqual({
-        ok: false,
-        response: [
-          'El nuevo registro de tarea con el code: T1 ya existe en la DB',
-        ],
-      })
+    it('should give an message error when there is code duplication', async () => {
+      await expect(taskService.create(taskToCreate)).rejects.toThrow(
+        new BadRequestException(['El registro code: T1 ya existe en la DB']),
+      )
     })
 
     it('should return error if code is empty', async () => {

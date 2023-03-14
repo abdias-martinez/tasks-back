@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  BadRequestException,
-} from '@nestjs/common'
+import { Body, Controller, Get, Post } from '@nestjs/common'
 import { TaskService } from './task.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 @Controller('task')
@@ -18,11 +12,6 @@ export class TaskController {
 
   @Post()
   async create(@Body() task: CreateTaskDto) {
-    const { ok, response } = await this.taskService.create(task)
-    if (!ok) {
-      throw new BadRequestException(response)
-    }
-
-    return response
+    return this.taskService.create(task)
   }
 }
