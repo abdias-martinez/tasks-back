@@ -7,7 +7,7 @@ import config from '../config'
 @Global()
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
+    MongooseModule.forRoot({
       useFactory: (configService: ConfigType<typeof config>) => ({
         uri: configService.MONGO.URI,
       }),

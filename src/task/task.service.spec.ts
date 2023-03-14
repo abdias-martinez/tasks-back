@@ -2,20 +2,22 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MongoHelper } from '../../test/mongo-helper'
 import { Task, TaskSchema } from './entities/task.entity'
-import { IFakeDbConnection } from './interfaces/fake-db-connection'
 import { TaskService } from './task.service'
 
 describe('TaskService', () => {
   let taskService: TaskService
-  let fakeDbConnection: IFakeDbConnection
+  const mongoServer = MongoHelper.createServer()
 
   beforeAll(async () => {
-    fakeDbConnection = await MongoHelper.startFakeDbConnection()
-    const { mongoUri } = fakeDbConnection
+    const path = `${__dirname}\\fixtures`
+    const mongoUri = await MongoHelper.setup(path, await mongoServer)
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MongooseModule.forRoot(mongoUri, { useNewUrlParser: true }),
+        MongooseModule.forRoot(mongoUri, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }),
         MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
       ],
       providers: [TaskService],
@@ -25,7 +27,7 @@ describe('TaskService', () => {
   })
 
   afterAll(async () => {
-    await MongoHelper.stopFakeDbConnection(fakeDbConnection)
+    await MongoHelper.stop(await mongoServer)
   })
 
   it('should be defined', () => {
@@ -64,7 +66,6 @@ describe('TaskService', () => {
 
     it('should create a new task, save it to the DB and return it', async () => {
       const response = await taskService.create(taskToCreate)
-
       expect(response).toHaveProperty('_id')
     })
 
@@ -102,21 +103,11 @@ describe('TaskService', () => {
     })
   })
 
-  // describe('When the get method is called', () => {
-  //   it('should a return a list of tasks', async () => {
-  //     const response = await taskService.getAll()
-
-  //     expect(response).toEqual([
-  //       {
-  //         _id: '6407dcfc92c931a743a169d1',
-  //         taskName: 'Task 1',
-  //         taskDescription: 'Task 1 description',
-  //         code: 'task-1',
-  //         statusId: 'Creado',
-  //         createdAt: '2023-03-10T19:46:25.857Z',
-  //         updatedAt: '2023-03-10T19:46:25.857Z',
-  //       },
-  //     ])
-  //   })
-  // })
+  describe('When the get method is called', () => {
+    it('should return the length 7 of the task list', async () => {
+      const response = await taskService.getAll()
+      const TASKS_LENGTH = 8
+      expect(response).toHaveLength(TASKS_LENGTH)
+    })
+  })
 })

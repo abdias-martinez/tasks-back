@@ -7,18 +7,17 @@ import { MongoHelper } from '../../test/mongo-helper'
 import { Task, TaskSchema } from './entities/task.entity'
 import { TaskController } from './task.controller'
 import { TaskService } from './task.service'
-import { IFakeDbConnection } from './interfaces/fake-db-connection'
 import { TypeStatusEnum } from './interfaces/task-status'
 import { CreateTaskDto } from './dto/create-task.dto'
 
 describe('TaskController', () => {
   let taskController: TaskController
-  let mongod: IFakeDbConnection
   let app: INestApplication
+  const mongoServer = MongoHelper.createServer()
 
   beforeAll(async () => {
-    mongod = await MongoHelper.startFakeDbConnection()
-    const { mongoUri } = mongod
+    const path = `${__dirname}\\fixtures`
+    const mongoUri = await MongoHelper.setup(path, await mongoServer)
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -35,7 +34,7 @@ describe('TaskController', () => {
   })
 
   afterAll(async () => {
-    await MongoHelper.stopFakeDbConnection(mongod)
+    await MongoHelper.stop(await mongoServer)
     await app.close()
   })
 

@@ -1,39 +1,40 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import * as Fixtures from 'node-mongodb-fixtures'
-import { Connection, connect } from 'mongoose'
-import { IFakeDbConnection } from '../src/task/interfaces/fake-db-connection'
+import * as mongoose from 'mongoose'
+import { Logger } from '@nestjs/common'
 
 export class MongoHelper {
-  static startFakeDbConnection = async (): Promise<IFakeDbConnection> => {
+  static createServer = async () =>
+    await MongoMemoryServer.create({
+      binary: {
+        version: '5.0.8',
+      },
+    })
+
+  static setup = async (
+    fixturesPath: string,
+    mongoServer: MongoMemoryServer,
+  ) => {
+    const mongoUri = mongoServer.getUri()
     const fixtures = new Fixtures({
-      dir: 'src/task/fixtures/',
+      dir: fixturesPath,
       filter: '.*',
       mute: true,
     })
 
-    const mongod: MongoMemoryServer = await MongoMemoryServer.create()
-    const mongoUri = mongod.getUri()
-    await fixtures.connect(mongoUri, {
-      useUnifiedTopology: true,
-    })
-    await fixtures.load()
-    // await fixtures.unload()
-    // await fixtures.disconnect()
+    await fixtures
+      .connect(mongoUri)
+      .then(() => fixtures.unload())
+      .then(() => fixtures.load())
+      .catch(() => new Logger())
+      .finally(() => fixtures.disconnect())
 
-    const mongoConnection: Connection = (await connect(mongoUri)).connection
-
-    return {
-      mongod,
-      mongoConnection,
-      mongoUri,
-    }
+    await mongoose.connect(mongoUri)
+    return mongoUri
   }
 
-  static stopFakeDbConnection = async (
-    fakeDbConnection: IFakeDbConnection,
-  ): Promise<void> => {
-    await fakeDbConnection?.mongoConnection.dropDatabase()
-    await fakeDbConnection?.mongoConnection.close()
-    await fakeDbConnection?.mongod.stop()
+  static stop = async (mongoServer: MongoMemoryServer): Promise<boolean> => {
+    await mongoose.disconnect()
+    return mongoServer.stop()
   }
 }
