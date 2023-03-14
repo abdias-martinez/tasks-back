@@ -76,7 +76,6 @@ describe('TaskController', () => {
 
       const createTaskDto = new CreateTaskDto()
       Object.assign(createTaskDto, task)
-
       const errors = await validate(createTaskDto)
 
       expect(errors[0].constraints).toEqual({
