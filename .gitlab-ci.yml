@@ -22,13 +22,7 @@ cache:
     - node_modules
     - "packages/*/node_modules"
 
-stages: 
-  - build
-  - lint
-  - test
-
-build-code:
-  stage: build
+before_all:
   script: 
     - echo "Instalando dependencias"
     - npm install
@@ -36,6 +30,10 @@ build-code:
   artifacts:
     paths:
       - node_modules/
+
+stages: 
+  - lint
+  - test
 
 lint-tinkin:
   stage: lint
