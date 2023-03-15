@@ -4,7 +4,6 @@ import { MongoHelper } from '../../test/mongo-helper'
 import { Task, TaskSchema } from './entities/task.entity'
 import { TaskService } from './task.service'
 import { BadRequestException } from '@nestjs/common'
-import { TypeStatusEnum } from './interfaces/task-status'
 
 describe('TaskService', () => {
   let taskService: TaskService
@@ -72,7 +71,7 @@ describe('TaskService', () => {
       expect(response).toEqual(
         expect.objectContaining({
           ...taskToCreate,
-          statusId: TypeStatusEnum.CREATE,
+          statusId: 1,
           updatedAt: expect.any(Date),
           createdAt: expect.any(Date),
         }),
@@ -114,7 +113,7 @@ describe('TaskService', () => {
 
   describe('When the get method is called', () => {
     it('should return the amount and list of tasks', async () => {
-      const response = await taskService.getAll()
+      const response = await taskService.getAll({})
       expect(response).toMatchObject({
         count: expect.any(Number),
         task: expect.any(Array),
@@ -122,7 +121,7 @@ describe('TaskService', () => {
     })
 
     it('Returns the list of tasks with the values', async () => {
-      const response = await taskService.getAll()
+      const response = await taskService.getAll({})
 
       expect(response.task[0]).toMatchObject({
         id: expect.any(Object),
@@ -135,6 +134,21 @@ describe('TaskService', () => {
         taskDescription: expect.any(String),
         updatedAt: expect.any(String),
       })
+    })
+
+    it('Returns the list of tasks filtered by the statusId', async () => {
+      const EXPECTED_TASKS = 2
+      const filter = { statusId: 2 }
+      const response = await taskService.getAll(filter)
+
+      expect(response.task).toHaveLength(EXPECTED_TASKS)
+    })
+
+    it('Returns the list of tasks filtered by the search (taskName, taskDescription)', async () => {
+      const filter = { search: 'task 2' }
+      const response = await taskService.getAll(filter)
+
+      expect(response.task).toHaveLength(1)
     })
   })
 })

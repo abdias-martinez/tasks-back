@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common'
+import { BadRequestException, HttpStatus, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 
@@ -12,6 +12,16 @@ const bootstrap = async () => {
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,
+      },
+      exceptionFactory: (errors) => {
+        throw new BadRequestException({
+          status: HttpStatus.BAD_REQUEST,
+          errors: errors.map((error) => ({
+            property: error.property,
+            value: error.value,
+            constraints: error.constraints,
+          })),
+        })
       },
     }),
   )

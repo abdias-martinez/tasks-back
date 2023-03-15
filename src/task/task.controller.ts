@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common'
 import { TaskService } from './task.service'
 import { CreateTaskDto } from './dto/create-task.dto'
+import { Query } from '@nestjs/common/decorators'
+import { FilterDto } from './dto/filter-task.dto'
 @Controller('task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
@@ -11,8 +13,8 @@ export class TaskController {
   }
 
   @Get()
-  getAll() {
-    return this.taskService.getAll()
+  getAll(@Query() filterDTO: FilterDto) {
+    return this.taskService.getAll(filterDTO)
   }
 
   @Post()

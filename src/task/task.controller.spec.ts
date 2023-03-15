@@ -7,8 +7,8 @@ import { MongoHelper } from '../../test/mongo-helper'
 import { Task, TaskSchema } from './entities/task.entity'
 import { TaskController } from './task.controller'
 import { TaskService } from './task.service'
-import { TypeStatusEnum } from './interfaces/task-status'
 import { CreateTaskDto } from './dto/create-task.dto'
+import { FilterDto } from './dto/filter-task.dto'
 
 describe('TaskController', () => {
   let taskController: TaskController
@@ -118,8 +118,62 @@ describe('TaskController', () => {
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
         _id: expect.any(String),
-        statusId: TypeStatusEnum.CREATE,
+        statusId: 1,
         ['__v']: expect.any(Number),
+      })
+    })
+  })
+
+  describe('GET /task', () => {
+    it('get list the amount and list of tasks', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/task')
+        .expect(HttpStatus.OK)
+
+      expect(response.body).toMatchObject({
+        count: expect.any(Number),
+        task: expect.any(Array),
+      })
+    })
+
+    it('Returns a list when performing a query', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/task')
+        .query({ search: 'nestjs' })
+        .expect(HttpStatus.OK)
+
+      expect(response.body).toMatchObject({
+        count: expect.any(Number),
+        task: expect.any(Array),
+      })
+    })
+
+    it('Returns a error when statusId is not number', async () => {
+      const queryDto = {
+        statusId: false,
+      }
+
+      const filterDto = new FilterDto()
+      Object.assign(filterDto, queryDto)
+      const errors = await validate(filterDto)
+
+      expect(errors[0].constraints).toEqual({
+        isNumber: 'El campo statusId debe ser un número',
+        isPositive: 'El campo statusId debe ser un número positivo',
+      })
+    })
+
+    it('Returns a error when statusId is not number positive', async () => {
+      const queryDto = {
+        statusId: -1,
+      }
+
+      const filterDto = new FilterDto()
+      Object.assign(filterDto, queryDto)
+      const errors = await validate(filterDto)
+
+      expect(errors[0].constraints).toEqual({
+        isPositive: 'El campo statusId debe ser un número positivo',
       })
     })
   })
