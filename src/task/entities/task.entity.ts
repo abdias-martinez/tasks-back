@@ -30,7 +30,16 @@ export class Task extends Document {
   })
   statusId: TypeStatusEnum
 
+  @Prop({
+    type: Date,
+    default: Date.now,
+  })
   updatedAt: Date
+
+  @Prop({
+    type: Date,
+    default: Date.now,
+  })
   createdAt: Date
 }
 
