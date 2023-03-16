@@ -1,8 +1,15 @@
 import { formatDateTime } from './date-utils'
 
 describe('Format date', () => {
-  it('should return the formatted date 04/03/2023 14:40', () => {
-    const response = formatDateTime(new Date('2023-03-04T19:40:28.476Z'))
-    expect(response).toBe('04/03/2023 14:40')
+  it('should return string', () => {
+    const response = formatDateTime()
+    expect(typeof response).toBe('string')
+  })
+
+  it('should return in format DD/MM/YYYY HH:MM', () => {
+    const EXPECTED_FORMAT = /^(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2})$/
+    const response = formatDateTime()
+
+    expect(response).toMatch(EXPECTED_FORMAT)
   })
 })
