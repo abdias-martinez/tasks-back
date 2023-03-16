@@ -7,7 +7,7 @@ export const formatDateTime = (date?: Date): string => {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true,
+    hour12: false,
   })
 
   const formattedDateTime = dateTime.format(newDate)

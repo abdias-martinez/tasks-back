@@ -9,6 +9,7 @@ import { TaskController } from './task.controller'
 import { TaskService } from './task.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { FilterDto } from './dto/filter-task.dto'
+import { TypeStatusEnum } from './interfaces/task-status'
 
 describe('TaskController', () => {
   let taskController: TaskController
@@ -46,15 +47,15 @@ describe('TaskController', () => {
     it('get the list of status', async () => {
       const taskStatus = [
         {
-          id: 1,
+          id: TypeStatusEnum.CREATE,
           name: 'Creada',
         },
         {
-          id: 2,
+          id: TypeStatusEnum.IN_PROCESS,
           name: 'En proceso',
         },
         {
-          id: 3,
+          id: TypeStatusEnum.FINISHED,
           name: 'Terminada',
         },
       ]
@@ -118,20 +119,45 @@ describe('TaskController', () => {
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
         _id: expect.any(String),
-        statusId: 1,
+        statusId: TypeStatusEnum.CREATE,
         ['__v']: expect.any(Number),
       })
     })
   })
 
   describe('GET /task', () => {
+    const EXPECTED_TASKS = [
+      {
+        id: expect.any(String),
+        taskName: 'Task 2',
+        taskDescription: 'Task 2 description nestjs',
+        code: 'task-2',
+        status: {
+          id: TypeStatusEnum.IN_PROCESS,
+          name: 'En proceso',
+        },
+        updatedAt: '10/03/2023 15:46',
+      },
+      {
+        id: expect.any(String),
+        taskName: 'Task 5',
+        taskDescription: 'Task 5 description nestjs',
+        code: 'task-5',
+        status: {
+          id: TypeStatusEnum.CREATE,
+          name: 'Creada',
+        },
+        updatedAt: '10/03/2023 16:46',
+      },
+    ]
+
     it('get list the amount and list of tasks', async () => {
       const response = await request(app.getHttpServer())
         .get('/task')
         .expect(HttpStatus.OK)
 
       expect(response.body).toMatchObject({
-        count: expect.any(Number),
+        count: 8,
         task: expect.any(Array),
       })
     })
@@ -143,27 +169,12 @@ describe('TaskController', () => {
         .expect(HttpStatus.OK)
 
       expect(response.body).toMatchObject({
-        count: expect.any(Number),
-        task: expect.any(Array),
+        count: 2,
+        task: EXPECTED_TASKS,
       })
     })
 
-    it('Returns a error when statusId is not number', async () => {
-      const queryDto = {
-        statusId: false,
-      }
-
-      const filterDto = new FilterDto()
-      Object.assign(filterDto, queryDto)
-      const errors = await validate(filterDto)
-
-      expect(errors[0].constraints).toEqual({
-        isNumber: 'El campo statusId debe ser un número',
-        isPositive: 'El campo statusId debe ser un número positivo',
-      })
-    })
-
-    it('Returns a error when statusId is not number positive', async () => {
+    it('Returns a error when statusId is not number string', async () => {
       const queryDto = {
         statusId: -1,
       }
@@ -173,7 +184,7 @@ describe('TaskController', () => {
       const errors = await validate(filterDto)
 
       expect(errors[0].constraints).toEqual({
-        isPositive: 'El campo statusId debe ser un número positivo',
+        isString: 'El campo statusId debe ser una cadena de texto',
       })
     })
   })

@@ -1,5 +1,5 @@
 export enum TypeStatusEnum {
-  CREATE = 'Creada',
-  IN_PROCESS = 'En proceso',
-  FINISHED = 'Terminada',
+  CREATE = '11111',
+  IN_PROCESS = '22222',
+  FINISHED = '33333',
 }

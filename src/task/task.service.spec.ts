@@ -4,6 +4,7 @@ import { MongoHelper } from '../../test/mongo-helper'
 import { Task, TaskSchema } from './entities/task.entity'
 import { TaskService } from './task.service'
 import { BadRequestException } from '@nestjs/common'
+import { TypeStatusEnum } from './interfaces/task-status'
 
 describe('TaskService', () => {
   let taskService: TaskService
@@ -39,15 +40,15 @@ describe('TaskService', () => {
     it('should return all the status', () => {
       const taskStatus = [
         {
-          id: 1,
+          id: TypeStatusEnum.CREATE,
           name: 'Creada',
         },
         {
-          id: 2,
+          id: TypeStatusEnum.IN_PROCESS,
           name: 'En proceso',
         },
         {
-          id: 3,
+          id: TypeStatusEnum.FINISHED,
           name: 'Terminada',
         },
       ]
@@ -71,7 +72,7 @@ describe('TaskService', () => {
       expect(response).toEqual(
         expect.objectContaining({
           ...taskToCreate,
-          statusId: 1,
+          statusId: TypeStatusEnum.CREATE,
           updatedAt: expect.any(Date),
           createdAt: expect.any(Date),
         }),
@@ -115,7 +116,7 @@ describe('TaskService', () => {
     it('should return the amount and list of tasks', async () => {
       const response = await taskService.getAll({})
       expect(response).toMatchObject({
-        count: expect.any(Number),
+        count: 8,
         task: expect.any(Array),
       })
     })
@@ -125,20 +126,20 @@ describe('TaskService', () => {
 
       expect(response.task[0]).toMatchObject({
         id: expect.any(Object),
-        code: expect.any(String),
+        code: 'task-1',
         status: {
-          id: expect.any(Number),
-          name: expect.any(String),
+          id: TypeStatusEnum.CREATE,
+          name: 'Creada',
         },
-        taskName: expect.any(String),
-        taskDescription: expect.any(String),
-        updatedAt: expect.any(String),
+        taskName: 'Task 1',
+        taskDescription: 'Task 1 description',
+        updatedAt: '10/03/2023 14:46',
       })
     })
 
     it('Returns the list of tasks filtered by the statusId', async () => {
       const EXPECTED_TASKS = 2
-      const filter = { statusId: 2 }
+      const filter = { statusId: TypeStatusEnum.IN_PROCESS }
       const response = await taskService.getAll(filter)
 
       expect(response.task).toHaveLength(EXPECTED_TASKS)
@@ -148,7 +149,44 @@ describe('TaskService', () => {
       const filter = { search: 'task 2' }
       const response = await taskService.getAll(filter)
 
-      expect(response.task).toHaveLength(1)
+      expect(response).toMatchObject({
+        count: 1,
+        task: [
+          {
+            id: expect.any(Object),
+            code: 'task-2',
+            status: {
+              id: TypeStatusEnum.IN_PROCESS,
+              name: 'En proceso',
+            },
+            taskName: 'Task 2',
+            taskDescription: 'Task 2 description nestjs',
+            updatedAt: '10/03/2023 15:46',
+          },
+        ],
+      })
+    })
+
+    it('Returns the lis/t of tasks filtered by the search and statusId', async () => {
+      const filter = { search: 'next', statusId: TypeStatusEnum.IN_PROCESS }
+      const response = await taskService.getAll(filter)
+
+      expect(response).toMatchObject({
+        count: 1,
+        task: [
+          {
+            id: expect.any(Object),
+            code: 'task-3',
+            status: {
+              id: TypeStatusEnum.IN_PROCESS,
+              name: 'En proceso',
+            },
+            taskName: 'Task 3',
+            taskDescription: 'Task 3 description next',
+            updatedAt: '10/03/2023 16:46',
+          },
+        ],
+      })
     })
   })
 })

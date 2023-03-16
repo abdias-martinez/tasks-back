@@ -4,4 +4,5 @@ export const ERROR_MESSAGES = {
   isNumber: 'El campo $property debe ser un número',
   isPositive: 'El campo $property debe ser un número positivo',
   isDuplicated: 'El registro $property: $value ya existe en la DB',
+  isNotExists: 'No se pudo encontrar $property con el valor: $value',
 }
