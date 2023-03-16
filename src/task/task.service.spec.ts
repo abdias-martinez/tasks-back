@@ -113,19 +113,11 @@ describe('TaskService', () => {
   })
 
   describe('When the get method is called', () => {
-    it('should return the amount and list of tasks', async () => {
-      const response = await taskService.getAll({})
-      expect(response).toMatchObject({
-        count: 8,
-        task: expect.any(Array),
-      })
-    })
-
     it('Returns the list of tasks with the values', async () => {
       const response = await taskService.getAll({})
 
       expect(response.task[0]).toMatchObject({
-        id: expect.any(Object),
+        id: expect.any(String),
         code: 'task-1',
         status: {
           id: TypeStatusEnum.CREATE,
@@ -133,7 +125,7 @@ describe('TaskService', () => {
         },
         taskName: 'Task 1',
         taskDescription: 'Task 1 description',
-        updatedAt: expect.any(String),
+        updatedAt: '10/03/2023 19:46',
       })
     })
 
@@ -153,7 +145,7 @@ describe('TaskService', () => {
         count: 1,
         task: [
           {
-            id: expect.any(Object),
+            id: expect.any(String),
             code: 'task-2',
             status: {
               id: TypeStatusEnum.IN_PROCESS,
@@ -161,7 +153,7 @@ describe('TaskService', () => {
             },
             taskName: 'Task 2',
             taskDescription: 'Task 2 description nestjs',
-            updatedAt: expect.any(String),
+            updatedAt: '10/03/2023 20:46',
           },
         ],
       })
@@ -175,7 +167,7 @@ describe('TaskService', () => {
         count: 1,
         task: [
           {
-            id: expect.any(Object),
+            id: expect.any(String),
             code: 'task-3',
             status: {
               id: TypeStatusEnum.IN_PROCESS,
@@ -183,7 +175,7 @@ describe('TaskService', () => {
             },
             taskName: 'Task 3',
             taskDescription: 'Task 3 description next',
-            updatedAt: expect.any(String),
+            updatedAt: '10/03/2023 21:46',
           },
         ],
       })

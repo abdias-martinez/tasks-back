@@ -2,16 +2,7 @@ import { BadRequestException } from '@nestjs/common'
 import { formatDateTime } from '../../utils/date/date-utils'
 import { TASK_STATUS } from '../../constants/status'
 import { ERROR_MESSAGES } from '../../constants/errors'
-import { TypeStatusEnum } from '../interfaces/task-status'
-
-interface Task {
-  _id: string
-  updatedAt: Date
-  taskName: string
-  taskDescription: string
-  statusId: TypeStatusEnum
-  code: string
-}
+import { TaskDocument } from '../entities/task.entity'
 
 export class TaskDto {
   id: string
@@ -21,8 +12,8 @@ export class TaskDto {
   code: string
   status: object
 
-  constructor(task: Task) {
-    this.id = task['_id']
+  constructor(task: TaskDocument) {
+    this.id = task.id
     this.updatedAt = formatDateTime(task.updatedAt)
     this.taskName = task.taskName
     this.taskDescription = task.taskDescription

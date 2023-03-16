@@ -37,7 +37,7 @@ export class TaskService {
           { taskDescription: { $regex: search, $options: 'i' } },
         ],
       })
-      .lean()
+      .exec()
     const count = tasks.length
     const newTasks = tasks.map((task) => new TaskDto(task))
     return { count, task: newTasks }

@@ -1,14 +1,16 @@
+import { TypeStatusEnum } from '../task/interfaces/task-status'
+
 export const TASK_STATUS = [
   {
-    id: '11111',
+    id: TypeStatusEnum.CREATE,
     name: 'Creada',
   },
   {
-    id: '22222',
+    id: TypeStatusEnum.IN_PROCESS,
     name: 'En proceso',
   },
   {
-    id: '33333',
+    id: TypeStatusEnum.FINISHED,
     name: 'Terminada',
   },
 ]

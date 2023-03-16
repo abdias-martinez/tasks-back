@@ -136,7 +136,7 @@ describe('TaskController', () => {
           id: TypeStatusEnum.IN_PROCESS,
           name: 'En proceso',
         },
-        updatedAt: expect.any(String),
+        updatedAt: '10/03/2023 20:46',
       },
       {
         id: expect.any(String),
@@ -147,7 +147,7 @@ describe('TaskController', () => {
           id: TypeStatusEnum.CREATE,
           name: 'Creada',
         },
-        updatedAt: expect.any(String),
+        updatedAt: '10/03/2023 21:46',
       },
     ]
 
@@ -176,7 +176,7 @@ describe('TaskController', () => {
 
     it('Returns a error when statusId is not number string', async () => {
       const queryDto = {
-        statusId: -1,
+        statusId: 'CREATESs',
       }
 
       const filterDto = new FilterDto()
@@ -184,7 +184,7 @@ describe('TaskController', () => {
       const errors = await validate(filterDto)
 
       expect(errors[0].constraints).toEqual({
-        isString: 'El campo statusId debe ser una cadena de texto',
+        isEnum: 'El valor: CREATESs no es correcto de la propiedad statusId',
       })
     })
   })
