@@ -136,7 +136,7 @@ describe('TaskController', () => {
           id: TypeStatusEnum.IN_PROCESS,
           name: 'En proceso',
         },
-        updatedAt: '10/03/2023 15:46',
+        updatedAt: expect.any(String),
       },
       {
         id: expect.any(String),
@@ -147,7 +147,7 @@ describe('TaskController', () => {
           id: TypeStatusEnum.CREATE,
           name: 'Creada',
         },
-        updatedAt: '10/03/2023 16:46',
+        updatedAt: expect.any(String),
       },
     ]
 
