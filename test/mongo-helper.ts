@@ -4,12 +4,7 @@ import * as mongoose from 'mongoose'
 import { Logger } from '@nestjs/common'
 
 export class MongoHelper {
-  static createServer = async () =>
-    await MongoMemoryServer.create({
-      binary: {
-        version: '5.0.8',
-      },
-    })
+  static createServer = async () => await MongoMemoryServer.create()
 
   static setup = async (
     fixturesPath: string,
