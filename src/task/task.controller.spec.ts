@@ -17,7 +17,7 @@ describe('TaskController', () => {
   const mongoServer = MongoHelper.createServer()
 
   beforeAll(async () => {
-    const path = `${__dirname}\\fixtures`
+    const path = 'src/task/fixtures'
     const mongoUri = await MongoHelper.setup(path, await mongoServer)
 
     const module: TestingModule = await Test.createTestingModule({
