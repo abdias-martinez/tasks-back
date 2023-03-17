@@ -125,7 +125,7 @@ describe('TaskService', () => {
         },
         taskName: 'Task 1',
         taskDescription: 'Task 1 description',
-        updatedAt: '10/03/2023 19:46',
+        updatedAt: '10/03/2023 14:46',
       })
     })
 
@@ -153,7 +153,7 @@ describe('TaskService', () => {
             },
             taskName: 'Task 2',
             taskDescription: 'Task 2 description nestjs',
-            updatedAt: '10/03/2023 20:46',
+            updatedAt: '10/03/2023 15:46',
           },
         ],
       })
@@ -175,7 +175,7 @@ describe('TaskService', () => {
             },
             taskName: 'Task 3',
             taskDescription: 'Task 3 description next',
-            updatedAt: '10/03/2023 21:46',
+            updatedAt: '10/03/2023 16:46',
           },
         ],
       })
