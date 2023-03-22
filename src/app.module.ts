@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { TaskModule } from './task/task.module'
+import { CommonModule } from './common/common.module'
 import config from './config'
 
 @Module({
@@ -16,6 +17,7 @@ import config from './config'
     }),
     DatabaseModule,
     TaskModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

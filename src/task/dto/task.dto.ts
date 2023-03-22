@@ -7,12 +7,13 @@ import { TaskDocument } from '../entities/task.entity'
 export class TaskDto {
   id: string
   updatedAt: string
+  createdAt: string
   taskName: string
   taskDescription: string
   code: string
   status: object
 
-  constructor(task: TaskDocument) {
+  constructor(task: TaskDocument, isCreatedAt?: boolean) {
     this.id = task.id
     this.updatedAt = formatDateTime(task.updatedAt)
     this.taskName = task.taskName
@@ -25,6 +26,9 @@ export class TaskDto {
           .replace('$property', 'statusId')
           .replace('$value', task.statusId.toString()),
       ])
+    }
+    if (isCreatedAt) {
+      this.createdAt = formatDateTime(task.createdAt)
     }
   }
 }

@@ -136,7 +136,7 @@ describe('TaskController', () => {
           id: TypeStatusEnum.IN_PROCESS,
           name: 'En proceso',
         },
-        updatedAt: '10/03/2023 15:46',
+        updatedAt: '10/03/2023 20:46',
       },
       {
         id: expect.any(String),
@@ -147,7 +147,7 @@ describe('TaskController', () => {
           id: TypeStatusEnum.CREATE,
           name: 'Creada',
         },
-        updatedAt: '10/03/2023 16:46',
+        updatedAt: '10/03/2023 21:46',
       },
     ]
 
@@ -185,6 +185,41 @@ describe('TaskController', () => {
 
       expect(errors[0].constraints).toEqual({
         isEnum: 'El valor: CREATESs no es correcto de la propiedad statusId',
+      })
+    })
+  })
+
+  describe('GET /task/:id', () => {
+    it('should return an error if it is not a valid id', async () => {
+      const taskId = '6407dcfc92c931a743a169qwe'
+      const response = await request(app.getHttpServer())
+        .get(`/task/${taskId}`)
+        .expect(HttpStatus.BAD_REQUEST)
+
+      expect(response.body).toMatchObject({
+        error: 'Bad Request',
+        message: [`No se encontró datos con el id ${taskId}`],
+        statusCode: HttpStatus.BAD_REQUEST,
+      })
+    })
+
+    it('should return a task by ID', async () => {
+      const taskId = '6407dcfc92c931a743a169d7'
+      const response = await request(app.getHttpServer())
+        .get(`/task/${taskId}`)
+        .expect(HttpStatus.OK)
+
+      expect(response.body).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Task 7',
+        taskDescription: 'Task 7 description',
+        code: 'task-7',
+        status: {
+          id: 'CREATE',
+          name: 'Creada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: '10/03/2023 21:46',
       })
     })
   })

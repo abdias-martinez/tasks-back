@@ -43,6 +43,13 @@ export class TaskService {
     return { count, task: newTasks }
   }
 
+  async geTaskById(id: string) {
+    const task = await this.validateIfTaskAlreadyInDbById(id)
+
+    const newTask = new TaskDto(task, true)
+    return newTask
+  }
+
   private async validateIfTaskAlreadyInDB(code: string): Promise<void> {
     const response = await this.taskModel.exists({ code })
     if (response) {
@@ -52,5 +59,15 @@ export class TaskService {
 
       throw new BadRequestException([message])
     }
+  }
+
+  private async validateIfTaskAlreadyInDbById(id: string) {
+    const response = await this.taskModel.findById({ _id: id })
+    if (!response) {
+      const message = ERROR_MESSAGES.isNotExistsDB.replace('$value', id)
+      throw new BadRequestException([message])
+    }
+
+    return response
   }
 }

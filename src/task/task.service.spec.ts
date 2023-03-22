@@ -125,7 +125,7 @@ describe('TaskService', () => {
         },
         taskName: 'Task 1',
         taskDescription: 'Task 1 description',
-        updatedAt: '10/03/2023 14:46',
+        updatedAt: '10/03/2023 19:46',
       })
     })
 
@@ -153,7 +153,7 @@ describe('TaskService', () => {
             },
             taskName: 'Task 2',
             taskDescription: 'Task 2 description nestjs',
-            updatedAt: '10/03/2023 15:46',
+            updatedAt: '10/03/2023 20:46',
           },
         ],
       })
@@ -175,9 +175,38 @@ describe('TaskService', () => {
             },
             taskName: 'Task 3',
             taskDescription: 'Task 3 description next',
-            updatedAt: '10/03/2023 16:46',
+            updatedAt: '10/03/2023 21:46',
           },
         ],
+      })
+    })
+  })
+
+  describe('When the get method is called by ID', () => {
+    it('should give an error when the id does not exist', async () => {
+      await expect(
+        taskService.geTaskById('6407dcfc92c931a743a169d8'),
+      ).rejects.toThrow(
+        new BadRequestException([
+          'No se encontró datos con el id 6407dcfc92c931a743a169d8',
+        ]),
+      )
+    })
+
+    it('should query a task and return it', async () => {
+      const response = await taskService.geTaskById('6407dcfc92c931a743a169d7')
+
+      expect(response).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Task 7',
+        taskDescription: 'Task 7 description',
+        code: 'task-7',
+        status: {
+          id: 'CREATE',
+          name: 'Creada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: '10/03/2023 21:46',
       })
     })
   })
