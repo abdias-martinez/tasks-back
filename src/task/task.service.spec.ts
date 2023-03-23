@@ -185,7 +185,7 @@ describe('TaskService', () => {
   describe('When the get method is called by ID', () => {
     it('should give an error when the id does not exist', async () => {
       await expect(
-        taskService.geTaskById('6407dcfc92c931a743a169d8'),
+        taskService.getTaskById('6407dcfc92c931a743a169d8'),
       ).rejects.toThrow(
         new BadRequestException([
           'No se encontró datos con el id 6407dcfc92c931a743a169d8',
@@ -194,7 +194,7 @@ describe('TaskService', () => {
     })
 
     it('should query a task and return it', async () => {
-      const response = await taskService.geTaskById('6407dcfc92c931a743a169d7')
+      const response = await taskService.getTaskById('6407dcfc92c931a743a169d7')
 
       expect(response).toMatchObject({
         id: expect.any(String),

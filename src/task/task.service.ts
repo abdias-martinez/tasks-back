@@ -43,11 +43,10 @@ export class TaskService {
     return { count, task: newTasks }
   }
 
-  async geTaskById(id: string) {
+  async getTaskById(id: string) {
     const task = await this.validateIfTaskAlreadyInDbById(id)
 
-    const newTask = new TaskDto(task, true)
-    return newTask
+    return new TaskDto(task, true)
   }
 
   private async validateIfTaskAlreadyInDB(code: string): Promise<void> {

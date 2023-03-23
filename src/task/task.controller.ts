@@ -20,7 +20,7 @@ export class TaskController {
 
   @Get(':id')
   geTaskById(@Param('id', ParseMongoIdPipe) id: string) {
-    return this.taskService.geTaskById(id)
+    return this.taskService.getTaskById(id)
   }
 
   @Post()
