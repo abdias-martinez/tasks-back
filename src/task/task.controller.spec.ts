@@ -199,7 +199,7 @@ describe('TaskController', () => {
 
       expect(response.body).toMatchObject({
         error: 'Bad Request',
-        message: [`No se encontró datos con el id ${taskId}`],
+        message: [`El id ${taskId} no se encuentra en la base de datos`],
         statusCode: HttpStatus.BAD_REQUEST,
       })
     })
@@ -235,7 +235,7 @@ describe('TaskController', () => {
 
       expect(response.body).toMatchObject({
         error: 'Bad Request',
-        message: [`No se encontró datos con el id ${taskId}`],
+        message: [`El id ${taskId} no se encuentra en la base de datos`],
         statusCode: HttpStatus.BAD_REQUEST,
       })
     })
