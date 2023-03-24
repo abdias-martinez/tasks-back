@@ -235,12 +235,26 @@ describe('TaskService', () => {
     })
 
     it('should update task status', async () => {
-      const response = await taskService.updateTaskStatusById(
-        '6407dcfc92c931a743a169d3',
-        {
-          statusId: TypeStatusEnum.FINISHED,
+      const statusId = '6407dcfc92c931a743a169d3'
+
+      const task = await taskService.getTaskById(statusId)
+
+      expect(task).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Task 3',
+        taskDescription: 'Task 3 description next',
+        code: 'task-3',
+        status: {
+          id: 'IN_PROCESS',
+          name: 'En proceso',
         },
-      )
+        createdAt: '10/03/2023 21:46',
+        updatedAt: '10/03/2023 21:46',
+      })
+
+      const response = await taskService.updateTaskStatusById(statusId, {
+        statusId: TypeStatusEnum.FINISHED,
+      })
 
       expect(response).toMatchObject({
         id: expect.any(String),
