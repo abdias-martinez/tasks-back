@@ -7,4 +7,5 @@ export const ERROR_MESSAGES = {
   isNotExists: 'No se pudo encontrar $property con el valor: $value',
   isEnum: 'El valor: $value no es correcto de la propiedad $property',
   isNotExistsDB: 'No se encontró datos con el id $value',
+  isStatusComplete: 'La tarea ya está en estado Terminada',
 }

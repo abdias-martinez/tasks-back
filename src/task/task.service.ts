@@ -7,6 +7,7 @@ import { CreateTaskDto } from './dto/create-task.dto'
 import { TASK_STATUS } from '../constants/status'
 import { FilterDto } from './dto/filter-task.dto'
 import { TaskDto } from './dto/task.dto'
+import { TypeStatusEnum } from './interfaces/task-status'
 @Injectable()
 export class TaskService {
   constructor(
@@ -45,6 +46,22 @@ export class TaskService {
 
   async getTaskById(id: string) {
     const task = await this.validateIfTaskAlreadyInDbById(id)
+
+    return new TaskDto(task, true)
+  }
+
+  async updateTaskStatusById(
+    id: string,
+    { statusId }: { statusId: TypeStatusEnum },
+  ) {
+    const task = await this.validateIfTaskAlreadyInDbById(id)
+
+    if (task.statusId === TypeStatusEnum.FINISHED) {
+      throw new BadRequestException([ERROR_MESSAGES.isStatusComplete])
+    }
+
+    task.statusId = statusId
+    await task.save()
 
     return new TaskDto(task, true)
   }

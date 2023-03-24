@@ -10,6 +10,7 @@ import { TaskService } from './task.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { FilterDto } from './dto/filter-task.dto'
 import { TypeStatusEnum } from './interfaces/task-status'
+import { UpdateTaskDTO } from './dto/update-task.dto'
 
 describe('TaskController', () => {
   let taskController: TaskController
@@ -220,6 +221,57 @@ describe('TaskController', () => {
         },
         createdAt: '10/03/2023 21:46',
         updatedAt: '10/03/2023 21:46',
+      })
+    })
+  })
+
+  describe('PUT /task/:id with body statusID', () => {
+    it('should return an error if it is not a valid id', async () => {
+      const taskId = '6407dcfc92c931a743a169qwe'
+      const response = await request(app.getHttpServer())
+        .get(`/task/${taskId}`)
+        .send({ statusID: TypeStatusEnum.CREATE })
+        .expect(HttpStatus.BAD_REQUEST)
+
+      expect(response.body).toMatchObject({
+        error: 'Bad Request',
+        message: [`No se encontró datos con el id ${taskId}`],
+        statusCode: HttpStatus.BAD_REQUEST,
+      })
+    })
+
+    it('should give an error when the status is not correct', async () => {
+      const statusIdDto = {
+        statusId: 'TERMINADAs',
+      }
+
+      const updateTaskDTO = new UpdateTaskDTO()
+      Object.assign(updateTaskDTO, statusIdDto)
+      const errors = await validate(updateTaskDTO)
+
+      expect(errors[0].constraints).toEqual({
+        isEnum: 'El valor: TERMINADAs no es correcto de la propiedad statusId',
+      })
+    })
+
+    it('should return a new updated task with status by ID', async () => {
+      const taskId = '6407dcfc92c931a743a169d3'
+      const response = await request(app.getHttpServer())
+        .patch(`/task/${taskId}`)
+        .send({ statusId: TypeStatusEnum.FINISHED })
+        .expect(HttpStatus.OK)
+
+      expect(response.body).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Task 3',
+        taskDescription: 'Task 3 description next',
+        code: 'task-3',
+        status: {
+          id: 'FINISHED',
+          name: 'Terminada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: expect.any(String),
       })
     })
   })

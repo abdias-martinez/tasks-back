@@ -210,4 +210,50 @@ describe('TaskService', () => {
       })
     })
   })
+
+  describe('When the put method is called by ID and state ID', () => {
+    it('should give an error when the id does not exist', async () => {
+      await expect(
+        taskService.updateTaskStatusById('6407dcfc92c931a743a169d6', {
+          statusId: TypeStatusEnum.CREATE,
+        }),
+      ).rejects.toThrow(
+        new BadRequestException([
+          'No se encontró datos con el id 6407dcfc92c931a743a169d8',
+        ]),
+      )
+    })
+
+    it('should give an error when the task status has finished', async () => {
+      await expect(
+        taskService.updateTaskStatusById('6407dcfc92c931a743a169d6', {
+          statusId: TypeStatusEnum.FINISHED,
+        }),
+      ).rejects.toThrow(
+        new BadRequestException(['La tarea ya está en estado Terminada']),
+      )
+    })
+
+    it('should update task status', async () => {
+      const response = await taskService.updateTaskStatusById(
+        '6407dcfc92c931a743a169d3',
+        {
+          statusId: TypeStatusEnum.FINISHED,
+        },
+      )
+
+      expect(response).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Task 3',
+        taskDescription: 'Task 3 description next',
+        code: 'task-3',
+        status: {
+          id: 'FINISHED',
+          name: 'Terminada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: expect.any(String),
+      })
+    })
+  })
 })
