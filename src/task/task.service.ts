@@ -51,17 +51,18 @@ export class TaskService {
     return new TaskDto(task, true)
   }
 
-  async updateTaskStatusById(id: string, { statusId }: UpdateTaskDTO) {
+  async updateTask(id: string, updateTaskDTO: UpdateTaskDTO) {
     const task = await this.hasTaskById(id)
 
-    if (task.statusId === TypeStatusEnum.FINISHED) {
+    if (updateTaskDTO.statusId && task.statusId === TypeStatusEnum.FINISHED) {
       throw new BadRequestException([ERROR_MESSAGES.isStatusComplete])
     }
 
-    task.statusId = statusId
-    await task.save()
+    const newTask = await this.taskModel.findByIdAndUpdate(id, updateTaskDTO, {
+      new: true,
+    })
 
-    return new TaskDto(task, true)
+    return new TaskDto(newTask, true)
   }
 
   private async validateIfTaskAlreadyInDB(code: string): Promise<void> {

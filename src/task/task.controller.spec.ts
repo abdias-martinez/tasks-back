@@ -225,7 +225,7 @@ describe('TaskController', () => {
     })
   })
 
-  describe('PUT /task/:id with body statusID', () => {
+  describe('PUT /task/:id with body task', () => {
     it('should return an error if it is not a valid id', async () => {
       const taskId = '6407dcfc92c931a743a169qwe'
       const response = await request(app.getHttpServer())
@@ -254,6 +254,24 @@ describe('TaskController', () => {
       })
     })
 
+    it('should give an error when taskName and taskDescription are not string', async () => {
+      const taskDto = {
+        taskName: {},
+        taskDescription: 0,
+      }
+
+      const updateTaskDTO = new UpdateTaskDTO()
+      Object.assign(updateTaskDTO, taskDto)
+      const errors = await validate(updateTaskDTO)
+
+      expect(errors[0].constraints).toEqual({
+        isString: 'El campo taskName debe ser una cadena de texto',
+      })
+      expect(errors[1].constraints).toEqual({
+        isString: 'El campo taskDescription debe ser una cadena de texto',
+      })
+    })
+
     it('should return a new updated task with status by ID', async () => {
       const taskId = '6407dcfc92c931a743a169d3'
       const response = await request(app.getHttpServer())
@@ -269,6 +287,30 @@ describe('TaskController', () => {
         status: {
           id: 'FINISHED',
           name: 'Terminada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: expect.any(String),
+      })
+    })
+
+    it('should return a new updated task', async () => {
+      const taskId = '6407dcfc92c931a743a169d7'
+      const response = await request(app.getHttpServer())
+        .patch(`/task/${taskId}`)
+        .send({
+          taskName: 'Updated task',
+          taskDescription: 'Updated task description',
+        })
+        .expect(HttpStatus.OK)
+
+      expect(response.body).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Updated task',
+        taskDescription: 'Updated task description',
+        code: 'task-7',
+        status: {
+          id: 'CREATE',
+          name: 'Creada',
         },
         createdAt: '10/03/2023 21:46',
         updatedAt: expect.any(String),

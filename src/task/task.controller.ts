@@ -30,10 +30,10 @@ export class TaskController {
   }
 
   @Patch(':id')
-  updateTaskStatusById(
+  updateTask(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updateStatusIdDto: UpdateTaskDTO,
   ) {
-    return this.taskService.updateTaskStatusById(id, updateStatusIdDto)
+    return this.taskService.updateTask(id, updateStatusIdDto)
   }
 }

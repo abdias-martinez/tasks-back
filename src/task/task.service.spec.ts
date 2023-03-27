@@ -211,10 +211,10 @@ describe('TaskService', () => {
     })
   })
 
-  describe('When the put method is called by ID and state ID', () => {
+  describe('When the updateTaskStatusById patch method is called by ID and body of the task', () => {
     it('should give an error when the id does not exist', async () => {
       await expect(
-        taskService.updateTaskStatusById('6407dcfc92c931a743a169d6', {
+        taskService.updateTask('6407dcfc92c931a743a169d6', {
           statusId: TypeStatusEnum.CREATE,
         }),
       ).rejects.toThrow(
@@ -226,7 +226,7 @@ describe('TaskService', () => {
 
     it('should give an error when the task status has finished', async () => {
       await expect(
-        taskService.updateTaskStatusById('6407dcfc92c931a743a169d6', {
+        taskService.updateTask('6407dcfc92c931a743a169d6', {
           statusId: TypeStatusEnum.FINISHED,
         }),
       ).rejects.toThrow(
@@ -252,7 +252,7 @@ describe('TaskService', () => {
         updatedAt: '10/03/2023 21:46',
       })
 
-      const response = await taskService.updateTaskStatusById(statusId, {
+      const response = await taskService.updateTask(statusId, {
         statusId: TypeStatusEnum.FINISHED,
       })
 
@@ -264,6 +264,43 @@ describe('TaskService', () => {
         status: {
           id: 'FINISHED',
           name: 'Terminada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: expect.any(String),
+      })
+    })
+
+    it('should update task', async () => {
+      const statusId = '6407dcfc92c931a743a169d7'
+
+      const task = await taskService.getTaskById(statusId)
+
+      expect(task).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Task 7',
+        taskDescription: 'Task 7 description',
+        code: 'task-7',
+        status: {
+          id: 'CREATE',
+          name: 'Creada',
+        },
+        createdAt: '10/03/2023 21:46',
+        updatedAt: '10/03/2023 21:46',
+      })
+
+      const response = await taskService.updateTask(statusId, {
+        taskName: 'Updated task',
+        taskDescription: 'Updated task description',
+      })
+
+      expect(response).toMatchObject({
+        id: expect.any(String),
+        taskName: 'Updated task',
+        taskDescription: 'Updated task description',
+        code: 'task-7',
+        status: {
+          id: 'CREATE',
+          name: 'Creada',
         },
         createdAt: '10/03/2023 21:46',
         updatedAt: expect.any(String),
